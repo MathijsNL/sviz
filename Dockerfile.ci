@@ -1,9 +1,23 @@
+# Build stage
+FROM node:16 AS build
+WORKDIR /src
+COPY . ./
+
+RUN corepack enable
+RUN yarn install --immutable
+
+RUN yarn run web:build:prod
+
+# Release stage
 FROM caddy:2.9.1-alpine
 WORKDIR /app
 
+# Web files will be copied from build container
+COPY --from=build /src/web/.webpack ./
+
 # Copy index.html first to fail fast if it's missing
-COPY web/.webpack/index.html ./index.html
-COPY web/.webpack ./
+#COPY web/.webpack/index.html ./index.html
+#COPY web/.webpack ./
 
 EXPOSE 80 443
 

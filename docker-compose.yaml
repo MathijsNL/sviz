@@ -1,0 +1,10 @@
+services:
+  caddy:
+    build:
+      context: .
+      dockerfile: Dockerfile.ci
+    container_name: sviz_container
+    ports:
+      - "8080:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
